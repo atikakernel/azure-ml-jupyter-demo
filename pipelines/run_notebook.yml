@@ -1,0 +1,25 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+name: sales-report
+display_name: sales-report
+experiment_name: sales_reports
+
+code: .
+environment: azureml:sql-aml-env@latest
+
+# ▸ Papermill ejecuta el notebook y lo guarda con resultados
+command: >
+  papermill notebooks/01_sales_report.py
+           notebooks/output/report.ipynb
+           -p day_from ${{inputs.day_from}}
+           -p day_to   ${{inputs.day_to}}
+
+# ▸ Parámetros que podemos cambiar al lanzar el job
+inputs:
+  day_from: 2025-04-01
+  day_to:   2025-04-30
+
+# ▸ Pasamos la cadena de conexión desde Key Vault
+environment_variables:
+  SQL_CONN: "{{secrets/SQL-CONN}}"
+
+compute: azureml:cpu-cluster    # asegúrate de que el cluster existe
