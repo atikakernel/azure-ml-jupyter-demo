@@ -6,11 +6,11 @@ experiment_name: sales_reports
 code: .
 environment: azureml:sql-aml-env@latest
 
-command: >
-  papermill notebooks/01_sales_report.py
-           notebooks/output/report.ipynb
-           -p day_from ${{inputs.day_from}}
-           -p day_to   ${{inputs.day_to}}
+command: >-
+  bash -c "mkdir -p notebooks/output &&
+           papermill notebooks/01_sales_report.py notebooks/output/report.ipynb
+           -p day_from ${{inputs.day_from}} -p day_to ${{inputs.day_to}}"
+
 
 inputs:
   day_from: "2025-04-01"        # ← ahora es string
